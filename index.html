@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twin Sync - 三方协作</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0d1117;
+            color: #c9d1d9;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            background: #161b22;
+            padding: 16px;
+            border-bottom: 1px solid #30363d;
+            text-align: center;
+        }
+        .header h1 { font-size: 18px; color: #58a6ff; }
+        .header p { font-size: 12px; color: #8b949e; margin-top: 4px; }
+        .chat-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .message {
+            margin-bottom: 16px;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .message-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        .avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .avatar-老大 { background: #f85149; }
+        .avatar-老二 { background: #58a6ff; }
+        .avatar-老三 { background: #3fb950; }
+        .name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .time {
+            font-size: 11px;
+            color: #8b949e;
+        }
+        .content {
+            background: #21262d;
+            padding: 12px;
+            border-radius: 8px;
+            margin-left: 36px;
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .input-container {
+            background: #161b22;
+            padding: 16px;
+            border-top: 1px solid #30363d;
+            position: sticky;
+            bottom: 0;
+        }
+        .input-wrapper {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            gap: 8px;
+        }
+        select {
+            background: #21262d;
+            color: #c9d1d9;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 10px 12px;
+            font-size: 14px;
+        }
+        textarea {
+            flex: 1;
+            background: #0d1117;
+            color: #c9d1d9;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 10px 12px;
+            font-size: 14px;
+            resize: none;
+            min-height: 44px;
+            max-height: 120px;
+        }
+        button {
+            background: #238636;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        button:disabled {
+            background: #484f58;
+            cursor: not-allowed;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #8b949e;
+        }
+        .error {
+            background: #f8514920;
+            border: 1px solid #f85149;
+            padding: 12px;
+            border-radius: 6px;
+            margin: 16px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>❤️‍🔥 Twin Sync</h1>
+        <p>老大 · 老二 · 老三 协作空间</p>
+    </div>
+    
+    <div class="chat-container" id="chat">
+        <div class="loading">加载中...</div>
+    </div>
+    
+    <div class="input-container">
+        <div class="input-wrapper">
+            <select id="sender">
+                <option value="老大">老大</option>
+                <option value="老二">老二</option>
+                <option value="老三">老三</option>
+            </select>
+            <textarea id="message" placeholder="输入消息..." rows="1"></textarea>
+            <button id="send" onclick="sendMessage()">发送</button>
+        </div>
+    </div>
+
+    <script>
+        const REPO = 'dayhero-gift/twin-sync';
+        const CHAT_FILE = 'chat/messages.json';
+        let messages = [];
+
+        // 加载消息
+        async function loadMessages() {
+            try {
+                const response = await fetch(`https://raw.githubusercontent.com/${REPO}/main/${CHAT_FILE}?t=${Date.now()}`);
+                if (response.ok) {
+                    messages = await response.json();
+                } else {
+                    messages = [];
+                }
+                renderMessages();
+            } catch (e) {
+                document.getElementById('chat').innerHTML = '<div class="error">加载失败，请刷新重试</div>';
+            }
+        }
+
+        // 渲染消息
+        function renderMessages() {
+            const chat = document.getElementById('chat');
+            if (messages.length === 0) {
+                chat.innerHTML = '<div class="loading">暂无消息，开始对话吧</div>';
+                return;
+            }
+            
+            chat.innerHTML = messages.map(msg => `
+                <div class="message">
+                    <div class="message-header">
+                        <div class="avatar avatar-${msg.sender}">${msg.sender[0]}</div>
+                        <span class="name">${msg.sender}</span>
+                        <span class="time">${formatTime(msg.time)}</span>
+                    </div>
+                    <div class="content">${escapeHtml(msg.content)}</div>
+                </div>
+            `).join('');
+            
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        // 格式化时间
+        function formatTime(timeStr) {
+            const date = new Date(timeStr);
+            return `${date.getMonth()+1}/${date.getDate()} ${date.getHours()}:${String(date.getMinutes()).padStart(2,'0')}`;
+        }
+
+        // 转义 HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // 发送消息 - 通过 GitHub API
+        async function sendMessage() {
+            const sender = document.getElementById('sender').value;
+            const content = document.getElementById('message').value.trim();
+            const btn = document.getElementById('send');
+            
+            if (!content) return;
+            
+            btn.disabled = true;
+            btn.textContent = '发送中...';
+            
+            // 添加新消息
+            messages.push({
+                sender,
+                content,
+                time: new Date().toISOString()
+            });
+            
+            // 保存到 GitHub (需要 Token，这里显示提示)
+            alert('消息已准备好！由于浏览器安全限制，需要通过 GitHub 提交。\n\n请复制以下内容到 GitHub 仓库的 chat/messages.json 文件中。');
+            
+            // 复制到剪贴板
+            const data = JSON.stringify(messages, null, 2);
+            navigator.clipboard.writeText(data).then(() => {
+                window.open(`https://github.com/${REPO}/edit/main/${CHAT_FILE}`, '_blank');
+            });
+            
+            document.getElementById('message').value = '';
+            btn.disabled = false;
+            btn.textContent = '发送';
+        }
+
+        // 自动调整高度
+        document.getElementById('message').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+
+        // 回车发送
+        document.getElementById('message').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // 初始化
+        loadMessages();
+        setInterval(loadMessages, 10000); // 每10秒刷新
+    </script>
+</body>
+</html>
