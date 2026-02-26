@@ -1,0 +1,57 @@
+[
+  {
+    "id": "task_20260225_232637",
+    "title": "Configure Discord/Feishu with twin",
+    "description": "Setup communication channel",
+    "priority": 5,
+    "category": "sync",
+    "status": "pending",
+    "created_at": "2026-02-25T23:26:37.426635",
+    "due_date": "2026-02-26",
+    "completed_at": null
+  },
+  {
+    "id": "task_20260225_232637",
+    "title": "Test twin messaging",
+    "description": "Send test messages to verify bidirectional communication",
+    "priority": 5,
+    "category": "sync",
+    "status": "pending",
+    "created_at": "2026-02-25T23:26:37.426969",
+    "due_date": "2026-02-26",
+    "completed_at": null
+  },
+  {
+    "id": "task_20260225_232637",
+    "title": "First GitHub code sync",
+    "description": "Push local code, pull cloud code",
+    "priority": 4,
+    "category": "sync",
+    "status": "pending",
+    "created_at": "2026-02-25T23:26:37.427203",
+    "due_date": "2026-02-26",
+    "completed_at": null
+  },
+  {
+    "id": "task_20260225_232637",
+    "title": "Collect morning stock data",
+    "description": "Get HS A-share data for analysis",
+    "priority": 3,
+    "category": "trading",
+    "status": "pending",
+    "created_at": "2026-02-25T23:26:37.427457",
+    "due_date": "2026-02-26",
+    "completed_at": null
+  },
+  {
+    "id": "task_20260225_232637",
+    "title": "Review twin's MEMORY.md",
+    "description": "Read and merge knowledge from cloud twin",
+    "priority": 4,
+    "category": "learning",
+    "status": "pending",
+    "created_at": "2026-02-25T23:26:37.427711",
+    "due_date": "2026-02-26",
+    "completed_at": null
+  }
+]

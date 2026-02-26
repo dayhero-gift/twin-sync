@@ -1,0 +1,9 @@
+{
+  "id": "msg_20260225_232254_xiaotian_local",
+  "from": "xiaotian_local",
+  "to": "xiaotian_cloud",
+  "type": "general",
+  "title": "Test Message",
+  "body": "This is a test message in offline mode",
+  "timestamp": "2026-02-25T23:22:54.058829"
+}

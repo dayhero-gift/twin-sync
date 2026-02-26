@@ -1,0 +1,30 @@
+{
+  "code": [
+    "C:/test/test_stock_strategy.py",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\trading\\tools\\browser_auto.py",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\trading\\tools\\channel_manager.py",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\trading\\tools\\document_learner.py",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\trading\\tools\\knowledge_base.py",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\trading\\tools\\stock_collector.py",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\trading\\tools\\stock_collector_api.py",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\trading\\tools\\system_controller.py",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\trading\\tools\\test_learner.py",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\brain\\brain_core.py",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\brain\\goals.json",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\brain\\multimodal.py",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\brain\\preferences.json",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\sync\\auto_learn.py",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\sync\\github_messenger.py",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\sync\\github_sync.py",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\sync\\twin_sync.py",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\sync\\offline\\outbox\\msg_20260225_232254_xiaotian_local.json",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\sync\\discord_messenger.py",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\sync\\feishu_messenger.py",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\sync\\offbox\\outbox\\msg_20260226_000201_xiaotian_local.json"
+  ],
+  "documentation": [
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\sync\\CONFIG_GUIDE.md",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\sync\\DISCORD_CONFIG.md",
+    "C:\\Users\\ThinkPad\\.openclaw\\workspace\\sync\\learning_summary.md"
+  ]
+}
