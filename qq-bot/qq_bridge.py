@@ -17,7 +17,7 @@ from pathlib import Path
 app = Flask(__name__)
 
 # 配置
-GO_CQHTTP_URL = "http://127.0.0.1:5700"  # go-cqhttp地址
+GO_CQHTTP_URL = "http://192.168.0.238:5700"  # go-cqhttp地址（洛君本地IP）
 QQ_GROUP_ID = ""  # 群号（可选）
 QQ_USER_ID = ""   # 指定用户QQ号（可选）
 
