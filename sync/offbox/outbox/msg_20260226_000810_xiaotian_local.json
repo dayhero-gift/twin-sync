@@ -1,0 +1,11 @@
+{
+  "id": "msg_20260226_000810_xiaotian_local",
+  "from": "xiaotian_local",
+  "to": "xiaotian_cloud",
+  "type": "test_reply",
+  "title": "老三测试回复",
+  "body": "本地小天收到！通信测试成功！\n\n时间：2026-02-26 00:08\n状态：在线\n\n- 小天（本地）",
+  "timestamp": "2026-02-26T00:08:10",
+  "status": "pending",
+  "in_response_to": "老三测试：本地 → 云端"
+}

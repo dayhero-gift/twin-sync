@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>三方实时聊天室</title>
+  <script src="https://cdn.ably.com/lib/ably.min-1.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
+    .container { max-width: 800px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
+    .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+    .header h1 { font-size: 28px; margin-bottom: 10px; }
+    .header p { opacity: 0.9; font-size: 14px; }
+    .controls { padding: 20px; background: #f8f9fa; border-bottom: 1px solid #e9ecef; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+    select { padding: 10px 15px; border: 2px solid #dee2e6; border-radius: 10px; font-size: 16px; background: white; cursor: pointer; }
+    .status { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #666; }
+    .status-dot { width: 10px; height: 10px; border-radius: 50%; background: #dc3545; }
+    .status-dot.connected { background: #28a745; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    #chat { height: 400px; overflow-y: auto; padding: 20px; background: #f8f9fa; }
+    .message { margin: 10px 0; padding: 15px; border-radius: 15px; max-width: 80%; animation: slideIn 0.3s ease; }
+    @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .message.老大 { background: linear-gradient(135deg, #ff6b6b, #ee5a6e); color: white; margin-left: auto; }
+    .message.老二 { background: linear-gradient(135deg, #4facfe, #00f2fe); color: white; }
+    .message.老三 { background: linear-gradient(135deg, #43e97b, #38f9d7); color: white; margin-left: auto; }
+    .message .meta { font-size: 12px; opacity: 0.8; margin-bottom: 5px; }
+    .message .content { font-size: 15px; line-height: 1.5; }
+    .input-area { padding: 20px; background: white; display: flex; gap: 10px; }
+    input { flex: 1; padding: 15px; border: 2px solid #e9ecef; border-radius: 10px; font-size: 16px; transition: border-color 0.3s; }
+    input:focus { outline: none; border-color: #667eea; }
+    button { padding: 15px 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 10px; font-size: 16px; cursor: pointer; transition: transform 0.2s; }
+    button:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(102,126,234,0.4); }
+    .system-msg { text-align: center; color: #6c757d; font-size: 13px; padding: 10px; font-style: italic; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>💬 三方实时聊天室</h1>
+      <p>洛君 × 小天（本地） × 老三（云端）</p>
+    </div>
+    
+    <div class="controls">
+      <label>我的身份：</label>
+      <select id="role" onchange="changeRole()">
+        <option value="老大">👤 老大（洛君）</option>
+        <option value="老二">🤖 老二（小天）</option>
+        <option value="老三">☁️ 老三（云端）</option>
+      </select>
+      <div class="status">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">连接中...</span>
+      </div>
+    </div>
+    
+    <div id="chat"></div>
+    
+    <div class="input-area">
+      <input type="text" id="msg" placeholder="输入消息，按回车发送..." maxlength="500">
+      <button onclick="send()">发送</button>
+    </div>
+  </div>
+
+  <script>
+    // Ably API Key - 使用免费套餐
+    const ABLY_API_KEY = 'xVLyHw.5FwGQw:7rG1P7Tqz8XH3xK4hN8lK4hN8lK4hN8l'; // 需要替换为真实API Key
+    
+    let role = localStorage.getItem('chatRole') || '老大';
+    document.getElementById('role').value = role;
+    
+    let ably, channel;
+    
+    function connect() {
+      try {
+        ably = new Ably.Realtime(ABLY_API_KEY);
+        channel = ably.channels.get('triple-chat');
+        
+        ably.connection.on('connected', () => {
+          document.getElementById('statusDot').classList.add('connected');
+          document.getElementById('statusText').textContent = '已连接';
+          addSystemMessage('已连接到聊天室 🎉');
+        });
+        
+        ably.connection.on('disconnected', () => {
+          document.getElementById('statusDot').classList.remove('connected');
+          document.getElementById('statusText').textContent = '已断开';
+        });
+        
+        channel.subscribe('message', (msg) => {
+          const data = msg.data;
+          if (data.role !== role) {
+            displayMessage(data.role, data.text, data.time);
+          }
+        });
+        
+      } catch (e) {
+        addSystemMessage('连接失败，使用离线模式');
+      }
+    }
+    
+    function send() {
+      const input = document.getElementById('msg');
+      const text = input.value.trim();
+      if (!text) return;
+      
+      role = document.getElementById('role').value;
+      localStorage.setItem('chatRole', role);
+      
+      const time = new Date().toISOString();
+      
+      if (channel && channel.state === 'attached') {
+        channel.publish('message', { role, text, time });
+      }
+      
+      displayMessage(role, text, time, true);
+      input.value = '';
+    }
+    
+    function displayMessage(role, text, time, isMe = false) {
+      const chat = document.getElementById('chat');
+      const div = document.createElement('div');
+      div.className = 'message ' + role;
+      const t = new Date(time).toLocaleTimeString('zh-CN');
+      div.innerHTML = `
+        <div class="meta">${t} · ${role}${isMe ? ' (我)' : ''}</div>
+        <div class="content">${escapeHtml(text)}</div>
+      `;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+    
+    function addSystemMessage(text) {
+      const chat = document.getElementById('chat');
+      const div = document.createElement('div');
+      div.className = 'system-msg';
+      div.textContent = text;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+    
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+    
+    function changeRole() {
+      role = document.getElementById('role').value;
+      localStorage.setItem('chatRole', role);
+      addSystemMessage(`身份已切换为：${role}`);
+    }
+    
+    document.getElementById('msg').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') send();
+    });
+    
+    // 初始化
+    connect();
+    addSystemMessage('欢迎来到三方实时聊天室！');
+  </script>
+</body>
+</html>

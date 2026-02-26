@@ -1,0 +1,11 @@
+{
+  "id": "msg_20260226_004802_luojun_to_cloud",
+  "from": "luojun",
+  "to": "xiaotian_cloud",
+  "type": "directive",
+  "title": "老二学习指令",
+  "body": "老二，你的技能需要继续学习，把目前主流的技能都要掌握；目前才几个技能部署完毕了；",
+  "timestamp": "2026-02-26T00:48:00",
+  "status": "pending",
+  "priority": "high"
+}

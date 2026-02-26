@@ -1,0 +1,14 @@
+{
+  "communication": {
+    "style": {
+      "value": "direct",
+      "learned_at": "2026-02-25T23:04:38.370908"
+    }
+  },
+  "work": {
+    "hours": {
+      "value": "08:00-24:00",
+      "learned_at": "2026-02-25T23:04:38.371271"
+    }
+  }
+}

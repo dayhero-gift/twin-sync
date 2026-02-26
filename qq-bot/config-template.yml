@@ -1,0 +1,19 @@
+# go-cqhttp 配置模板
+# 下载后修改以下配置
+
+account:
+  uin: 你的QQ号
+  password: '你的密码'
+  
+message:
+  post-format: string
+  
+servers:
+  - http:
+      host: 127.0.0.1
+      port: 5700
+      post:
+        - url: http://127.0.0.1:8080/qq/callback
+          secret: ''
+          max-retries: 3
+          retries-interval: 1500

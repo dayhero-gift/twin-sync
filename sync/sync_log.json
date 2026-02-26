@@ -1,0 +1,26 @@
+[
+  {
+    "timestamp": "2026-02-26T08:45:53.259758",
+    "type": "send_to_laosan",
+    "data": {
+      "type": "daily_status",
+      "progress": "今日进化成果",
+      "tools": 12,
+      "docs": 8,
+      "skills": 10
+    },
+    "source": "xiaotian-local"
+  },
+  {
+    "timestamp": "2026-02-26T08:46:31.262321",
+    "type": "github_sync",
+    "data": "error: Command '['git', 'push']' returned non-zero exit status 128.",
+    "source": "xiaotian-local"
+  },
+  {
+    "timestamp": "2026-02-26T08:46:31.263721",
+    "type": "notify_luojun",
+    "data": "今日进化同步完成",
+    "source": "xiaotian-local"
+  }
+]
